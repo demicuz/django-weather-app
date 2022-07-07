@@ -1,5 +1,6 @@
 *.sqlite3
 __pycache__/
+polls/
 
 *.sublime-project
 *.sublime-workspace
