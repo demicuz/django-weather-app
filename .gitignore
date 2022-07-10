@@ -1,6 +1,8 @@
 *.sqlite3
 __pycache__/
 polls/
+.env
+*.cnf
 
 *.sublime-project
 *.sublime-workspace
