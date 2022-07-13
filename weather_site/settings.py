@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'weather_site.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-# Uses MySQL on prod
+# TODO Use MySQL on prod
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',

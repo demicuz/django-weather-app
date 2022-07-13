@@ -14,7 +14,7 @@ load_dotenv()
 OPENWEATHER_KEY = os.getenv("OPENWEATHER_KEY")
 
 def index(request):
-    cities = City.objects.all()[:5]
+    cities = City.objects.all()[:4]
 
     weather_data = []
     for city in cities:
@@ -33,7 +33,7 @@ def index(request):
 
     # show_city_form = ShowCityForm()
     # context = {'weather_data': weather_data, 'form': show_city_form}
-    context = {'weather_data': weather_data}
+    context = {'weather_data': weather_data, 'now': timezone.now()}
 
     return render(request, 'weather/index.html', context)
 

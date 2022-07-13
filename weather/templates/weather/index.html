@@ -4,10 +4,13 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
 	<style>
-		html, body, .wrapper {
+		html,
+		body,
+		.wrapper {
 			height: 100%;
 		}
 
@@ -44,24 +47,17 @@
 
 		<main>
 			<div class="row py-4">
-				<h2 class="text-center mb-4">What's the weather like?</h2>
+				<h2 class="text-center">What's the weather like?</h2>
+				<p class="text-center pb-4">{{ now }}</p>
 
 				<div class="col-md-5 col-lg-4 order-md-last">
 					<form class="card p-3 mb-3" action="{% url 'weather:view_city' %}" method="POST">
-				    {% csrf_token %}
+						{% csrf_token %}
 
-						<input
-							name="city_name"
-							type="text"
-							class="form-control mb-3 col-6 col-md-8"
-							placeholder="City name">
+						<input name="city_name" type="text" class="form-control mb-3 col-6 col-md-8" placeholder="City name">
 
 						<h5>
-							<input
-								type="submit"
-								value="Search"
-								class="btn btn-primary"
-							>
+							<input type="submit" value="Search" class="btn btn-primary">
 						</h5>
 					</form>
 
@@ -75,32 +71,57 @@
 				<div class="col-md-7 col-lg-8">
 					<div class="row row-cols-1 row-cols-lg-2 g-4">
 
+
+						{% for weather in weather_data %}
 						<div class="col">
 
-								{% for weather in weather_data %}
+							<div class="card">
+								<!-- 										<img
+											src="http://openweathermap.org/img/w/{{ weather.icon_name }}.png"
+											class=""
+											alt="weather icon"> -->
 
-									<div class="card">
-										<img :src="image.url" class="card-img-top" :alt="`image of '${image.name}'`">
+								<div class="card-body">
+									<!-- <h4 class="card-title d-flex justify-content-between align-items-center">
+										<span>{{ weather.city }}</span>
 
-										<div class="card-body">
-											<h5 class="card-title d-flex justify-content-between align-items-center">
-												<span>{{ weather.city }}</span>
-												<span>{{ weather.temp }}° C</span>
-
-												<button
+										<button
 													type="button"
 													class="btn btn-outline-danger"
 													@click="onDeleteImage(image.uuid)">
 
 													<i class="bi bi-trash3"></i>
 												</button>
-											</h5>
-										</div>
-									</div>
+									</h4> -->
+									<div class="d-flex justify-content-between align-items-start">
 
-								{% endfor %}
+										<div class="d-inline-flex flex-column">
+											<h4 class="pb-2 overflow-hidden">
+												<a
+													href="{% url 'weather:city_detail' weather.city.name weather.city.openweather_id %}"
+													class="text-dark">
+												{{ weather.city }}</a>
+											</h4>
+											<h4 class="pb-2"><mark class="p-1">{{ weather.temp|floatformat:1 }}° C</mark></h4>
+											<span>feels like {{ weather.feels_like|floatformat:1 }}° C</span>
+											<span>wind speed: {{ weather.wind_speed|floatformat:1 }} m/s</span>
+										</div>
+
+										<div class="d-inline-flex flex-column align-items-center">
+											<img
+												class="img-fluid"
+												src="http://openweathermap.org/img/w/{{ weather.icon_name }}.png"
+												alt="Weather icon">
+
+											<span class="text-muted text-end">{{ weather.desc_short }}</span>
+										</div>
+
+									</div>
+								</div>
+							</div>
 
 						</div>
+						{% endfor %}
 
 					</div>
 				</div>
@@ -109,13 +130,15 @@
 
 		<footer class="sticky-footer">
 			<div class="row py-3 bg-light text-muted text-center fs-5">
-				<p>Денис Мазурак 211-321</p>
+				<p>Темнее всего перед рассветом</p>
 			</div>
 		</footer>
 	</div>
 
 	<!-- <script src="js/bootstrap.bundle.min.js"></script> -->
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+		crossorigin="anonymous"></script>
 </body>
 
 </html>
