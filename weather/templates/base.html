@@ -53,14 +53,17 @@
 				<div class="col-md-5 col-lg-4 order-md-last">
 				{% block search_form %}
 
-					<form class="card p-3 mb-3" action="{% url 'weather:view_city' %}" method="POST">
+					<form class="card p-3" action="{% url 'weather:view_city' %}" method="POST">
 						{% csrf_token %}
 
-						<input name="city_name" type="text" class="form-control mb-3 col-6 col-md-8" placeholder="City name">
+						<!-- TODO some weird stuff in input -->
+						{# <div class="d-flex align-items-baseline"> #}
+						<p class="text-muted">Search with OpenWeather API:</p>
+						<div class="input-group align-items-start">
+							<input name="city_name" type="text" class="form-control mb-3" placeholder="City name">
 
-						<h5>
 							<input type="submit" value="Search" class="btn btn-primary">
-						</h5>
+						</div>
 					</form>
 
 					{% if error_message %}
