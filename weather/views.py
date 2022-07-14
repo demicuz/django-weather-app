@@ -54,6 +54,7 @@ def view_city(request):
         # TODO handle no Internet connection scenario
         weather = requests.get(url.format(city_name, OPENWEATHER_KEY)).json()
 
+        # TODO redirect to special error page, bc that's simpler
         if str(weather['cod']) == '404':
             return render(request, 'weather/index.html', {
                 'error_message': 'City not found!'
@@ -62,16 +63,18 @@ def view_city(request):
             return render(request, 'weather/index.html', {
                 'error_message': 'OpenWeather API error!'
             })
-        else:
+
+        if not City.objects.filter(name=weather['name']):
             new_city = City(name=weather['name'],
                             country_code=weather['sys']['country'],
                             openweather_id=weather['id'])
             new_city.save()
-            return HttpResponseRedirect(reverse('weather:city_detail',
-                                                args=(weather['name'], weather['id'])))
+
+        return HttpResponseRedirect(reverse('weather:city_detail',
+                                            args=(weather['name'], weather['id'])))
+
     else:
         city = city_set[0]
-        print('In database: ' + city.name)
         return HttpResponseRedirect(reverse('weather:city_detail',
                                             args=(city.name, city.openweather_id)))
 
