@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+
+	<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css"> -->
+	<style>
+		html,
+		body,
+		.wrapper {
+			height: 100%;
+		}
+
+		.sticky-footer {
+			position: sticky;
+			top: 100vh;
+		}
+	</style>
+	<title>{% block title %}Weather - 404{% endblock %}</title>
+</head>
+
+<body>
+
+	<div class="container-xxl wrapper">
+		<header>
+			<nav class="navbar navbar-expand-md navbar-light bg-light">
+				<div class="container-fluid">
+					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-links"
+						aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+					<div class="collapse navbar-collapse" id="navbar-links">
+						<ul class="navbar-nav me-auto">
+							<li class="nav-item">
+								<a class="nav-link active" href="/weather/">Home</a>
+							</li>
+
+							<li class="nav-item">
+								<a class="nav-link" href="/login/">Login</a>
+							</li>
+
+							<li class="nav-item">
+								<a class="nav-link" href="/signup/">Sign Up</a>
+							</li>
+						</ul>
+
+						<ul class="navbar-nav">
+							<li class="nav-item">
+								<a class="nav-link" href="/admin/">Admin</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</nav>
+		</header>
+
+		<main>
+			<div class="row py-4">
+				{% block top_content %}
+				<h2 class="text-center">404</h2>
+				<h5 class="text-center">Page not found!</h5>
+				{% endblock %}
+
+				{% block search_form %}
+				<div class="pt-5 d-flex justify-content-center flex-column mx-auto" style="max-width: 500px;">
+
+					<form class="mb-3" action="{% url 'weather:view_city' %}" method="POST">
+						{% csrf_token %}
+
+						<!-- TODO some weird stuff in input -->
+						{# <div class="d-flex align-items-baseline"> #}
+						<p class="text-muted">Search with OpenWeather API:</p>
+						<div class="input-group align-items-start">
+							<input name="city_name" type="text" class="form-control mb-3" placeholder="City name">
+
+							<input type="submit" value="Search" class="btn btn-primary">
+						</div>
+					</form>
+					{% if error_message %}
+
+						<div class="alert alert-danger overflow-hidden">
+							{{ error_message }}
+						</div>
+
+					{% endif %}
+				</div>
+				{% endblock search_form %}
+
+			</div>
+		</main>
+
+		{% block footer %}
+		<footer class="sticky-footer">
+			<div class="row py-1 bg-light text-muted text-center">
+				<span class="small">Темнее всего перед рассветом 🌅</span>
+			</div>
+		</footer>
+		{% endblock %}
+	</div>
+
+	<!-- <script src="js/bootstrap.bundle.min.js"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+
+</body>
+
+</html>

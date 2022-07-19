@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render
 from django.utils import timezone
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse
 from .models import City, CurrentWeather, create_current_weather
 # from .forms import ShowCityForm
@@ -56,11 +56,11 @@ def view_city(request):
 
         # TODO redirect to special error page, bc that's simpler
         if str(weather['cod']) == '404':
-            return render(request, 'weather/index.html', {
-                'error_message': 'City not found!'
+            return render(request, 'weather/city_search_failed.html', {
+                'error_message': f'"{city_name}" not found!'
             })
         elif str(weather['cod']) != '200':
-            return render(request, 'weather/index.html', {
+            return render(request, 'weather/city_search_failed.html', {
                 'error_message': 'OpenWeather API error!'
             })
 
