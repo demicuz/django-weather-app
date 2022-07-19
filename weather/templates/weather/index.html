@@ -6,7 +6,7 @@
 
 {% block top_content %}
 	<h2 class="text-center">What's the weather like?</h2>
-	<p class="text-center pb-4">{{ now }}</p>
+	<p class="text-center pb-4">{% now "F j, H:i" %}</p>
 {% endblock %}
 
 {% block content %}
@@ -37,7 +37,7 @@
 								class="text-dark">
 							{{ weather.city }}</a>
 						</h4>
-						<h4 class="pb-2"><mark class="p-1">{{ weather.temp|floatformat:1 }}° C</mark></h4>
+						<h4 class="pb-2"><mark class="p-1">{{ weather.temp|floatformat:0 }}° C</mark></h4>
 						<span>feels like {{ weather.feels_like|floatformat:1 }}° C</span>
 						<span>wind speed: {{ weather.wind_speed|floatformat:1 }} m/s</span>
 					</div>

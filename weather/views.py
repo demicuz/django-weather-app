@@ -33,7 +33,7 @@ def index(request):
 
     # show_city_form = ShowCityForm()
     # context = {'weather_data': weather_data, 'form': show_city_form}
-    context = {'weather_data': weather_data, 'now': timezone.now()}
+    context = {'weather_data': weather_data}
 
     return render(request, 'weather/index.html', context)
 
