@@ -79,11 +79,15 @@ def view_city(request):
                                             args=(city.name, city.openweather_id)))
 
 
-# 'city' is guaranteed to exist, but if it was deleted through admin panel or
-# smth, the app will crash. And it also has to be deleted AFTER view_city post
-# request, but BEFORE city_detail get request. So it's highly unlikely.
+# Even if the url is correct, but the city is not in database, it will raise 404.
+# To add a city you must search for it. This will querry OpenWeather API for city id.
 def city_detail(request, city_name, city_openweather_id):
-    city = City.objects.filter(openweather_id=city_openweather_id)[0]
+    city_set = City.objects.filter(openweather_id=city_openweather_id)
+
+    if not city_set or city_set[0].name != city_name:
+        raise Http404(f'City {city_name} with OpenWeather id {city_openweather_id} not found!')
+
+    city = city_set[0]
     current_weather_set = CurrentWeather.objects.filter(city=city)
 
     if not current_weather_set:
