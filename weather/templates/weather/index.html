@@ -30,7 +30,7 @@
 				</h4> -->
 				<div class="d-flex justify-content-between align-items-start">
 
-					<div class="d-inline-flex flex-column">
+					<div class="d-flex flex-column">
 						<h4 class="pb-2 overflow-hidden">
 							<a
 								href="{% url 'weather:city_detail' weather.city.name weather.city.openweather_id %}"
@@ -38,8 +38,8 @@
 							{{ weather.city }}</a>
 						</h4>
 						<h4 class="pb-2"><mark class="p-1">{{ weather.temp|floatformat:0 }}° C</mark></h4>
-						<span>feels like {{ weather.feels_like|floatformat:1 }}° C</span>
-						<span>wind speed: {{ weather.wind_speed|floatformat:1 }} m/s</span>
+						<span class="text-muted">feels like {{ weather.feels_like|floatformat:1 }}° C</span>
+						<span class="text-muted">wind speed: {{ weather.wind_speed|floatformat:1 }} m/s</span>
 					</div>
 
 					<div class="d-inline-flex flex-column align-items-center">
@@ -48,7 +48,7 @@
 							src="http://openweathermap.org/img/w/{{ weather.icon_name }}.png"
 							alt="Weather icon">
 
-						<span class="text-muted text-end">{{ weather.desc_short }}</span>
+						<span class="text-muted">{{ weather.desc_short }}</span>
 					</div>
 
 				</div>
