@@ -29,6 +29,7 @@ class CurrentWeather(models.Model):
     temp        = models.FloatField(default=0)
     feels_like  = models.FloatField(default=0)
     pressure    = models.IntegerField(default=0)
+    humidity    = models.IntegerField(default=0)
     wind_speed  = models.FloatField(default=0)
     description = models.CharField(max_length=50)
     desc_short  = models.CharField('short description', max_length=30)
@@ -50,14 +51,15 @@ class CurrentWeather(models.Model):
             print("OpenWeather update failed!")
             return
 
-        self.temp=weather['main']['temp']
-        self.feels_like=weather['main']['feels_like']
-        self.pressure=weather['main']['pressure']
-        self.wind_speed=weather['wind']['speed']
-        self.description=weather['weather'][0]['description']
-        self.desc_short=weather['weather'][0]['main']
-        self.icon_name=weather['weather'][0]['icon']
-        self.last_update=timezone.now()
+        self.temp        = weather['main']['temp']
+        self.feels_like  = weather['main']['feels_like']
+        self.pressure    = weather['main']['pressure']
+        self.humidity    = weather['main']['humidity']
+        self.wind_speed  = weather['wind']['speed']
+        self.description = weather['weather'][0]['description']
+        self.desc_short  = weather['weather'][0]['main']
+        self.icon_name   = weather['weather'][0]['icon']
+        self.last_update = timezone.now()
         self.save()
 
     def __str__(self):
@@ -74,6 +76,7 @@ def create_current_weather(city, city_openweather_id):
         temp=weather_json['main']['temp'],
         feels_like=weather_json['main']['feels_like'],
         pressure=weather_json['main']['pressure'],
+        humidity=weather_json['main']['humidity'],
         wind_speed=weather_json['wind']['speed'],
         description=weather_json['weather'][0]['description'],
         desc_short=weather_json['weather'][0]['main'],

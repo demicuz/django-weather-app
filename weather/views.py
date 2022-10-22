@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render
 from django.utils import timezone
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse
 from .models import City, CurrentWeather, create_current_weather
 # from .forms import ShowCityForm
@@ -14,7 +14,7 @@ load_dotenv()
 OPENWEATHER_KEY = os.getenv("OPENWEATHER_KEY")
 
 def index(request):
-    cities = City.objects.all()[:5]
+    cities = City.objects.all()[:4]
 
     weather_data = []
     for city in cities:
@@ -54,33 +54,40 @@ def view_city(request):
         # TODO handle no Internet connection scenario
         weather = requests.get(url.format(city_name, OPENWEATHER_KEY)).json()
 
+        # TODO redirect to special error page, bc that's simpler
         if str(weather['cod']) == '404':
-            return render(request, 'weather/index.html', {
-                'error_message': 'City not found!'
+            return render(request, 'weather/city_search_failed.html', {
+                'error_message': f'"{city_name}" not found!'
             })
         elif str(weather['cod']) != '200':
-            return render(request, 'weather/index.html', {
+            return render(request, 'weather/city_search_failed.html', {
                 'error_message': 'OpenWeather API error!'
             })
-        else:
+
+        if not City.objects.filter(name=weather['name']):
             new_city = City(name=weather['name'],
                             country_code=weather['sys']['country'],
                             openweather_id=weather['id'])
             new_city.save()
-            return HttpResponseRedirect(reverse('weather:city_detail',
-                                                args=(weather['name'], weather['id'])))
+
+        return HttpResponseRedirect(reverse('weather:city_detail',
+                                            args=(weather['name'], weather['id'])))
+
     else:
         city = city_set[0]
-        print('In database: ' + city.name)
         return HttpResponseRedirect(reverse('weather:city_detail',
                                             args=(city.name, city.openweather_id)))
 
 
-# 'city' is guaranteed to exist, but if it was deleted through admin panel or
-# smth, the app will crash. And it also has to be deleted AFTER view_city post
-# request, but BEFORE city_detail get request. So it's highly unlikely.
+# Even if the url is correct, but the city is not in database, it will raise 404.
+# To add a city you must search for it. This will querry OpenWeather API for city id.
 def city_detail(request, city_name, city_openweather_id):
-    city = City.objects.filter(openweather_id=city_openweather_id)[0]
+    city_set = City.objects.filter(openweather_id=city_openweather_id)
+
+    if not city_set or city_set[0].name != city_name:
+        raise Http404(f'City {city_name} with OpenWeather id {city_openweather_id} not found!')
+
+    city = city_set[0]
     current_weather_set = CurrentWeather.objects.filter(city=city)
 
     if not current_weather_set:
