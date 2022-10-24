@@ -9,15 +9,16 @@ from django.db.models import Count, Sum, Min, Max, DateTimeField
 
 @admin.register(City)
 class CityAdmin(admin.ModelAdmin):
-    list_display = ("russian_name", "name", "openweather_id",)
+    list_display = ("russian_name", "name", "openweather_id", "latitude", "longitude",)
     search_fields = ("russian_name__icontains", "name__icontains")
 
 
 @admin.register(CurrentWeather)
 class CityAdmin(admin.ModelAdmin):
-    list_display = ("city", "temp", "description",)
-    list_filter = ("description",)
-    search_fields = ("city__russian_name", "description__icontains",)
+    # fields = ("city",)
+    list_display = ("city", "temp", "russian_desc",)
+    list_filter = ("russian_desc",)
+    search_fields = ("city__russian_name", "russian_desc__icontains",)
 
 
 @admin.register(CityStats)
@@ -39,6 +40,8 @@ class StatsSummaryAdmin(admin.ModelAdmin):
             qs = response.context_data['cl'].queryset
         except (AttributeError, KeyError):
             return response
+
+        print(qs)
 
         metrics = {
             'total_cities': Count('city'),
