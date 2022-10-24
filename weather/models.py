@@ -22,7 +22,7 @@ class City(models.Model):
         return self.name
 
     class Meta:
-        verbose_name_plural = 'cities'
+        verbose_name_plural = 'Города'
 
 
 class CurrentWeather(models.Model):
@@ -67,6 +67,10 @@ class CurrentWeather(models.Model):
         self.last_update = timezone.now()
         self.save()
 
+    class Meta:
+        verbose_name        = 'Прогноз'
+        verbose_name_plural = 'Прогнозы'
+
     def __str__(self):
         return self.city.name + ": " + self.desc_short
 
@@ -83,6 +87,7 @@ class CityStats(models.Model):
         self.save()
 
     class Meta:
+        verbose_name        = 'Статистика по городам'
         verbose_name_plural = 'Статистика по городам'
 
     def __str__(self):
