@@ -1,8 +1,11 @@
-from django.shortcuts import redirect, render
-from django.utils import timezone
+from django.shortcuts import render
 from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse
-from .models import City, CurrentWeather, create_current_weather
+from django.core.exceptions import ObjectDoesNotExist
+# from django.shortcuts import redirect
+# from django.utils import timezone
+
+from .models import City, CurrentWeather, CityStats, create_current_weather
 # from .forms import ShowCityForm
 
 import requests
@@ -18,13 +21,10 @@ def index(request):
 
     weather_data = []
     for city in cities:
-        # TODO DRY, see city_detail()
-        current_weather_set = CurrentWeather.objects.filter(city=city)
-
-        if not current_weather_set:
+        try:
+            current_weather = city.weather
+        except ObjectDoesNotExist:
             current_weather = create_current_weather(city, city.openweather_id)
-        else:
-            current_weather = current_weather_set[0]
 
         if not current_weather.was_updated_last_minute():
             current_weather.update()
@@ -43,7 +43,7 @@ def index(request):
 def view_city(request):
     city_name = request.POST['city_name']
     if not city_name:
-        return render(request, 'weather/index.html', {
+        return render(request, 'weather/city_search_failed.html', {
             'error_message': 'Search field is empty!'
         })
 
@@ -67,7 +67,9 @@ def view_city(request):
         if not City.objects.filter(name=weather['name']):
             new_city = City(name=weather['name'],
                             country_code=weather['sys']['country'],
-                            openweather_id=weather['id'])
+                            openweather_id=weather['id'],
+                            latitude=weather['coord']['lat'],
+                            longitude=weather['coord']['lon'])
             new_city.save()
 
         return HttpResponseRedirect(reverse('weather:city_detail',
@@ -88,14 +90,19 @@ def city_detail(request, city_name, city_openweather_id):
         raise Http404(f'City {city_name} with OpenWeather id {city_openweather_id} not found!')
 
     city = city_set[0]
-    current_weather_set = CurrentWeather.objects.filter(city=city)
-
-    if not current_weather_set:
+    try:
+        current_weather = city.weather
+    except ObjectDoesNotExist:
         current_weather = create_current_weather(city, city_openweather_id)
-    else:
-        current_weather = current_weather_set[0]
 
     if not current_weather.was_updated_last_minute():
         current_weather.update()
+
+    try:
+        city_stats = city.stats
+    except ObjectDoesNotExist:
+        city_stats = CityStats(city=city)
+
+    city_stats.inc_views()
 
     return render(request, 'weather/city_detail.html', {'city': city, 'weather': current_weather})

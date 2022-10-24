@@ -12,19 +12,27 @@ OPENWEATHER_KEY = os.getenv("OPENWEATHER_KEY")
 
 
 class City(models.Model):
-    name = models.CharField(max_length=50)
-    country_code = models.CharField(max_length=3)
+    name           = models.CharField(max_length=50)
+    russian_name   = models.CharField(default="_",max_length=50)
+    country_code   = models.CharField(max_length=3)
     openweather_id = models.IntegerField(default=0, unique=True)
+    latitude       = models.FloatField(default=0)
+    longitude      = models.FloatField(default=0)
 
     def __str__(self):
-        return self.name
+        # return self.name
+        return self.russian_name
 
     class Meta:
-        verbose_name_plural = 'cities'
+        verbose_name_plural = 'Города'
 
 
 class CurrentWeather(models.Model):
-    city        = models.ForeignKey(City, on_delete=models.CASCADE)
+    # city        = models.ForeignKey(City, on_delete=models.CASCADE)
+    city        = models.OneToOneField(City,
+                                       on_delete=models.CASCADE,
+                                       primary_key=True,
+                                       related_name="weather")
 
     temp        = models.FloatField(default=0)
     feels_like  = models.FloatField(default=0)
@@ -36,7 +44,6 @@ class CurrentWeather(models.Model):
     icon_name   = models.CharField(max_length=10)
 
     last_update = models.DateTimeField()
-
 
     def was_updated_last_minute(self):
         now = timezone.now()
@@ -62,13 +69,42 @@ class CurrentWeather(models.Model):
         self.last_update = timezone.now()
         self.save()
 
+    class Meta:
+        verbose_name        = 'Прогноз'
+        verbose_name_plural = 'Прогнозы'
+
     def __str__(self):
         return self.city.name + ": " + self.desc_short
 
 
+class CityStats(models.Model):
+    city  = models.OneToOneField(City,
+                                 on_delete=models.CASCADE,
+                                 primary_key=True,
+                                 related_name="stats")
+    views = models.IntegerField(default=0)
+
+    def inc_views(self):
+        self.views += 1
+        self.save()
+
+    class Meta:
+        verbose_name        = 'Статистика по городам'
+        verbose_name_plural = 'Статистика по городам'
+
+    def __str__(self):
+        return self.city.name + ": " + str(self.views)
+
+
+class StatsSummary(CityStats):
+    class Meta:
+        proxy = True
+        verbose_name = "Дашборд"
+        verbose_name_plural = "Дашборд"
+
+
 def create_current_weather(city, city_openweather_id):
     # TODO handle failed requests
-    # TODO hide OpenWeather API key
     url = 'http://api.openweathermap.org/data/2.5/weather?id={}&units=metric&appid={}'
     weather_json = requests.get(url.format(city_openweather_id, OPENWEATHER_KEY)).json()
     current_weather = CurrentWeather(

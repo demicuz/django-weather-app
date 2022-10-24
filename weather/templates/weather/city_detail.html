@@ -57,8 +57,11 @@
 	</div>
 
 	<div class="d-flex justify-content-center">
-	  <iframe width="650" height="450"
+	  <!-- <iframe width="650" height="450"
 	        src="https://embed.windy.com/embed2.html?lat=55.752&lon=37.615&detailLat=55.752&detailLon=37.615&width=650&height=450&zoom=5&level=surface&overlay=wind&product=ecmwf&menu=&message=&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=default&metricTemp=%C2%B0C&radarRange=-1"
+	        frameborder="0"></iframe> -->
+    <iframe width="650" height="450"
+	        src="https://embed.windy.com/embed2.html?lat={{ weather.city.latitude }}&lon={{ weather.city.longitude }}&detailLat={{ weather.city.latitude }}&detailLon={{ weather.city.longitude }}&width=650&height=450&zoom=8&level=surface&overlay=wind&product=ecmwf&menu=&message=&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=default&metricTemp=%C2%B0C&radarRange=-1"
 	        frameborder="0"></iframe>
 	</div>
 {% endblock content %}
