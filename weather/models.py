@@ -34,14 +34,15 @@ class CurrentWeather(models.Model):
                                        primary_key=True,
                                        related_name="weather")
 
-    temp        = models.FloatField(default=0)
-    feels_like  = models.FloatField(default=0)
-    pressure    = models.IntegerField(default=0)
-    humidity    = models.IntegerField(default=0)
-    wind_speed  = models.FloatField(default=0)
-    description = models.CharField(max_length=50)
-    desc_short  = models.CharField('short description', max_length=30)
-    icon_name   = models.CharField(max_length=10)
+    temp         = models.FloatField(default=0)
+    feels_like   = models.FloatField(default=0)
+    pressure     = models.IntegerField(default=0)
+    humidity     = models.IntegerField(default=0)
+    wind_speed   = models.FloatField(default=0)
+    russian_desc = models.CharField('russian description',default="_", max_length=50)
+    description  = models.CharField(max_length=50)
+    desc_short   = models.CharField('short description', max_length=30)
+    icon_name    = models.CharField(max_length=10)
 
     last_update = models.DateTimeField()
 
