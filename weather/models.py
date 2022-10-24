@@ -13,13 +13,15 @@ OPENWEATHER_KEY = os.getenv("OPENWEATHER_KEY")
 
 class City(models.Model):
     name           = models.CharField(max_length=50)
+    russian_name   = models.CharField(default="_",max_length=50)
     country_code   = models.CharField(max_length=3)
     openweather_id = models.IntegerField(default=0, unique=True)
     latitude       = models.FloatField(default=0)
     longitude      = models.FloatField(default=0)
 
     def __str__(self):
-        return self.name
+        # return self.name
+        return self.russian_name
 
     class Meta:
         verbose_name_plural = 'Города'
@@ -92,6 +94,13 @@ class CityStats(models.Model):
 
     def __str__(self):
         return self.city.name + ": " + str(self.views)
+
+
+class StatsSummary(CityStats):
+    class Meta:
+        proxy = True
+        verbose_name = "Дашборд"
+        verbose_name_plural = "Дашборд"
 
 
 def create_current_weather(city, city_openweather_id):
