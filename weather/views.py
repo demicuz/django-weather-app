@@ -67,7 +67,9 @@ def view_city(request):
         if not City.objects.filter(name=weather['name']):
             new_city = City(name=weather['name'],
                             country_code=weather['sys']['country'],
-                            openweather_id=weather['id'])
+                            openweather_id=weather['id'],
+                            latitude=weather['coord']['lat'],
+                            longitude=weather['coord']['lon'])
             new_city.save()
 
         return HttpResponseRedirect(reverse('weather:city_detail',

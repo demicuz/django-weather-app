@@ -12,9 +12,11 @@ OPENWEATHER_KEY = os.getenv("OPENWEATHER_KEY")
 
 
 class City(models.Model):
-    name = models.CharField(max_length=50)
-    country_code = models.CharField(max_length=3)
+    name           = models.CharField(max_length=50)
+    country_code   = models.CharField(max_length=3)
     openweather_id = models.IntegerField(default=0, unique=True)
+    latitude       = models.FloatField(default=0)
+    longitude      = models.FloatField(default=0)
 
     def __str__(self):
         return self.name
